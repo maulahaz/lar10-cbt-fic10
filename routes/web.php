@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Route;
  
 // Route::get('login', [AuthController::class, 'login']);
 // Route::get('register', [AuthController::class, 'reg']);
+
+//--Soals
+Route::group(['namespace' => 'App\Http\Controllers'], function(){
+    Route::get('soal/list', 'SoalController@list');
+    Route::Resource('/soal', SoalController::class);
+});

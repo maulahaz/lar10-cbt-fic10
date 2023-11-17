@@ -22,7 +22,7 @@
     <link rel="stylesheet"
         href="{{ asset('stisla/css/style.css') }}">
     <link rel="stylesheet"
-        href="{{ asset('stisla/css/components.css') }}">
+        href="{{ asset('stisla/css/layouts.components.css') }}">
 
     <!-- Start GA -->
     <script async
@@ -45,16 +45,16 @@
     <div id="app">
         <div class="main-wrapper">
             <!-- Header -->
-            @include('components.header')
+            @include('layouts.components.header')
 
             <!-- Sidebar -->
-            @include('components.sidebar')
+            @include('layouts.components.sidebar')
 
             <!-- Content -->
             @yield('main')
 
             <!-- Footer -->
-            @include('components.footer')
+            @include('layouts.components.footer')
         </div>
     </div>
 

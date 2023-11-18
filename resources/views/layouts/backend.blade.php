@@ -22,7 +22,7 @@
     <link rel="stylesheet"
         href="{{ asset('stisla/css/style.css') }}">
     <link rel="stylesheet"
-        href="{{ asset('stisla/css/layouts.components.css') }}">
+        href="{{ asset('stisla/css/components.css') }}">
 
     <!-- Start GA -->
     <script async
@@ -72,6 +72,8 @@
     <!-- Template JS File -->
     <script src="{{ asset('stisla/js/scripts.js') }}"></script>
     <script src="{{ asset('stisla/js/custom.js') }}"></script>
+
+    @stack('after-scripts')
 </body>
 
 </html>

@@ -1,364 +1,168 @@
-@extends('layouts.app')
+@extends('layouts.backend')
 
-@section('title', 'Soal')
+<?php $pageTitle = !empty($soal) ? 'Edit Soal' : 'Add Soal' ?>
+
+@section('title', $pageTitle)
 
 @push('style')
     <!-- CSS Libraries -->
-    <link rel="stylesheet"
-        href="{{ asset('stisla/library/selectric/public/selectric.css') }}">
+    <link rel="stylesheet" href="{{ asset('stisla/library/bootstrap-daterangepicker/daterangepicker.css') }}">
+    <link rel="stylesheet" href="{{ asset('stisla/library/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('stisla/library/select2/dist/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('stisla/library/selectric/public/selectric.css') }}">
+    <link rel="stylesheet" href="{{ asset('stisla/library/bootstrap-timepicker/css/bootstrap-timepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('stisla/library/bootstrap-tagsinput/dist/bootstrap-tagsinput.css') }}">
 @endpush
 
 @section('main')
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1>Soal</h1>
-                <div class="section-header-button">
-                    <a href="features-post-create.html"
-                        class="btn btn-primary">Add New</a>
-                </div>
+                <h1>Soal Forms</h1>
                 <div class="section-header-breadcrumb">
-                    <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
-                    <div class="breadcrumb-item"><a href="#">Soal</a></div>
-                    <div class="breadcrumb-item">All Soal</div>
+                    <div class="breadcrumb-item active"><a href="{{ route('home') }}">Dashboard</a></div>
+                    <div class="breadcrumb-item">Soal</div>
                 </div>
             </div>
+
             <div class="section-body">
-                <h2 class="section-title">Soal</h2>
-                <p class="section-lead">
-                    You can manage all posts, such as editing, deleting and more.
-                </p>
+                <div class="card">
+                    @if (!empty($soal))
+                    <form action="{{ route('soal.store', $soal) }}" method="POST" id="frm_update" >
+                      @method('PUT')
 
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card mb-0">
-                            <div class="card-body">
-                                <ul class="nav nav-pills">
-                                    <li class="nav-item">
-                                        <a class="nav-link active"
-                                            href="#">All <span class="badge badge-white">5</span></a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="#">Draft <span class="badge badge-primary">1</span></a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="#">Pending <span class="badge badge-primary">1</span></a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link"
-                                            href="#">Trash <span class="badge badge-primary">0</span></a>
-                                    </li>
-                                </ul>
-                            </div>
+                    @else
+
+                    <form action="{{ route('soal.store') }}" method="POST" id="frm_create">  
+                        
+                    @endif
+
+                        @csrf
+                        <div class="card-header">
+                            <h4>{{$pageTitle}}</h4>
                         </div>
-                    </div>
-                </div>
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>All Soal</h4>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Pertanyaan</label>
+                                <input type="text"
+                                    class="form-control @error('pertanyaan')
+                                is-invalid
+                            @enderror"
+                                    name="pertanyaan" value="{{ !empty($soal) ? $soal->pertanyaan : old('pertanyaan') }}">
+                                @error('pertanyaan')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
-                            <div class="card-body">
-                                <div class="float-left">
-                                    <select class="form-control selectric">
-                                        <option>Action For Selected</option>
-                                        <option>Move to Draft</option>
-                                        <option>Move to Pending</option>
-                                        <option>Delete Pemanently</option>
-                                    </select>
-                                </div>
-                                <div class="float-right">
-                                    <form>
-                                        <div class="input-group">
-                                            <input type="text"
-                                                class="form-control"
-                                                placeholder="Search">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-primary"><i class="fas fa-search"></i></button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
+                            <div class="form-group">
+                                <label class="form-label">Kategori</label>
+                                <div class="selectgroup w-100">
+                                    <label class="selectgroup-item">
+                                        <input type="radio" name="kategori" value="Numeric" class="selectgroup-input"
+                                            checked="">
+                                        <span class="selectgroup-button">Numerik</span>
+                                    </label>
+                                    <label class="selectgroup-item">
+                                        <input type="radio" name="kategori" value="Verbal" class="selectgroup-input">
+                                        <span class="selectgroup-button">Verbal</span>
+                                    </label>
+                                    <label class="selectgroup-item">
+                                        <input type="radio" name="kategori" value="Logika" class="selectgroup-input">
+                                        <span class="selectgroup-button">Logika</span>
+                                    </label>
 
-                                <div class="clearfix mb-3"></div>
-
-                                <div class="table-responsive">
-                                    <table class="table-striped table">
-                                        <tr>
-                                            <th class="pt-2 text-center">
-                                                <div class="custom-checkbox custom-checkbox-table custom-control">
-                                                    <input type="checkbox"
-                                                        data-checkboxes="mygroup"
-                                                        data-checkbox-role="dad"
-                                                        class="custom-control-input"
-                                                        id="checkbox-all">
-                                                    <label for="checkbox-all"
-                                                        class="custom-control-label">&nbsp;</label>
-                                                </div>
-                                            </th>
-                                            <th>Title</th>
-                                            <th>Category</th>
-                                            <th>Author</th>
-                                            <th>Created At</th>
-                                            <th>Status</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="custom-checkbox custom-control">
-                                                    <input type="checkbox"
-                                                        data-checkboxes="mygroup"
-                                                        class="custom-control-input"
-                                                        id="checkbox-2">
-                                                    <label for="checkbox-2"
-                                                        class="custom-control-label">&nbsp;</label>
-                                                </div>
-                                            </td>
-                                            <td>Laravel 5 Tutorial: Introduction
-                                                <div class="table-links">
-                                                    <a href="#">View</a>
-                                                    <div class="bullet"></div>
-                                                    <a href="#">Edit</a>
-                                                    <div class="bullet"></div>
-                                                    <a href="#"
-                                                        class="text-danger">Trash</a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <a href="#">Web Developer</a>,
-                                                <a href="#">Tutorial</a>
-                                            </td>
-                                            <td>
-                                                <a href="#">
-                                                    <img alt="image"
-                                                        src="{{ asset('stisla/img/avatar/avatar-5.png') }}"
-                                                        class="rounded-circle"
-                                                        width="35"
-                                                        data-toggle="title"
-                                                        title="">
-                                                    <div class="d-inline-block ml-1">Rizal Fakhri</div>
-                                                </a>
-                                            </td>
-                                            <td>2018-01-20</td>
-                                            <td>
-                                                <div class="badge badge-primary">Published</div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="custom-checkbox custom-control">
-                                                    <input type="checkbox"
-                                                        data-checkboxes="mygroup"
-                                                        class="custom-control-input"
-                                                        id="checkbox-3">
-                                                    <label for="checkbox-3"
-                                                        class="custom-control-label">&nbsp;</label>
-                                                </div>
-                                            </td>
-                                            <td>Laravel 5 Tutorial: Installing
-                                                <div class="table-links">
-                                                    <a href="#">View</a>
-                                                    <div class="bullet"></div>
-                                                    <a href="#">Edit</a>
-                                                    <div class="bullet"></div>
-                                                    <a href="#"
-                                                        class="text-danger">Trash</a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <a href="#">Web Developer</a>,
-                                                <a href="#">Tutorial</a>
-                                            </td>
-                                            <td>
-                                                <a href="#">
-                                                    <img alt="image"
-                                                        src="{{ asset('stisla/img/avatar/avatar-5.png') }}"
-                                                        class="rounded-circle"
-                                                        width="35"
-                                                        data-toggle="title"
-                                                        title="">
-                                                    <div class="d-inline-block ml-1">Rizal Fakhri</div>
-                                                </a>
-                                            </td>
-                                            <td>2018-01-20</td>
-                                            <td>
-                                                <div class="badge badge-primary">Published</div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="custom-checkbox custom-control">
-                                                    <input type="checkbox"
-                                                        data-checkboxes="mygroup"
-                                                        class="custom-control-input"
-                                                        id="checkbox-4">
-                                                    <label for="checkbox-4"
-                                                        class="custom-control-label">&nbsp;</label>
-                                                </div>
-                                            </td>
-                                            <td>Laravel 5 Tutorial: MVC
-                                                <div class="table-links">
-                                                    <a href="#">View</a>
-                                                    <div class="bullet"></div>
-                                                    <a href="#">Edit</a>
-                                                    <div class="bullet"></div>
-                                                    <a href="#"
-                                                        class="text-danger">Trash</a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <a href="#">Web Developer</a>,
-                                                <a href="#">Tutorial</a>
-                                            </td>
-                                            <td>
-                                                <a href="#">
-                                                    <img alt="image"
-                                                        src="{{ asset('stisla/img/avatar/avatar-5.png') }}"
-                                                        class="rounded-circle"
-                                                        width="35"
-                                                        data-toggle="title"
-                                                        title="">
-                                                    <div class="d-inline-block ml-1">Rizal Fakhri</div>
-                                                </a>
-                                            </td>
-                                            <td>2018-01-20</td>
-                                            <td>
-                                                <div class="badge badge-primary">Published</div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="custom-checkbox custom-control">
-                                                    <input type="checkbox"
-                                                        data-checkboxes="mygroup"
-                                                        class="custom-control-input"
-                                                        id="checkbox-5">
-                                                    <label for="checkbox-5"
-                                                        class="custom-control-label">&nbsp;</label>
-                                                </div>
-                                            </td>
-                                            <td>Laravel 5 Tutorial: CRUD
-                                                <div class="table-links">
-                                                    <a href="#">View</a>
-                                                    <div class="bullet"></div>
-                                                    <a href="#">Edit</a>
-                                                    <div class="bullet"></div>
-                                                    <a href="#"
-                                                        class="text-danger">Trash</a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <a href="#">Web Developer</a>,
-                                                <a href="#">Tutorial</a>
-                                            </td>
-                                            <td>
-                                                <a href="#">
-                                                    <img alt="image"
-                                                        src="{{ asset('stisla/img/avatar/avatar-5.png') }}"
-                                                        class="rounded-circle"
-                                                        width="35"
-                                                        data-toggle="title"
-                                                        title="">
-                                                    <div class="d-inline-block ml-1">Rizal Fakhri</div>
-                                                </a>
-                                            </td>
-                                            <td>2018-01-20</td>
-                                            <td>
-                                                <div class="badge badge-danger">Draft</div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="custom-checkbox custom-control">
-                                                    <input type="checkbox"
-                                                        data-checkboxes="mygroup"
-                                                        class="custom-control-input"
-                                                        id="checkbox-1">
-                                                    <label for="checkbox-1"
-                                                        class="custom-control-label">&nbsp;</label>
-                                                </div>
-                                            </td>
-                                            <td>Laravel 5 Tutorial: Deployment
-                                                <div class="table-links">
-                                                    <a href="#">View</a>
-                                                    <div class="bullet"></div>
-                                                    <a href="#">Edit</a>
-                                                    <div class="bullet"></div>
-                                                    <a href="#"
-                                                        class="text-danger">Trash</a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <a href="#">Web Developer</a>,
-                                                <a href="#">Tutorial</a>
-                                            </td>
-                                            <td>
-                                                <a href="#">
-                                                    <img alt="image"
-                                                        src="{{ asset('stisla/img/avatar/avatar-5.png') }}"
-                                                        class="rounded-circle"
-                                                        width="35"
-                                                        data-toggle="title"
-                                                        title="">
-                                                    <div class="d-inline-block ml-1">Rizal Fakhri</div>
-                                                </a>
-                                            </td>
-                                            <td>2018-01-20</td>
-                                            <td>
-                                                <div class="badge badge-warning">Pending</div>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="float-right">
-                                    <nav>
-                                        <ul class="pagination">
-                                            <li class="page-item disabled">
-                                                <a class="page-link"
-                                                    href="#"
-                                                    aria-label="Previous">
-                                                    <span aria-hidden="true">&laquo;</span>
-                                                    <span class="sr-only">Previous</span>
-                                                </a>
-                                            </li>
-                                            <li class="page-item active">
-                                                <a class="page-link"
-                                                    href="#">1</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link"
-                                                    href="#">2</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link"
-                                                    href="#">3</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link"
-                                                    href="#"
-                                                    aria-label="Next">
-                                                    <span aria-hidden="true">&raquo;</span>
-                                                    <span class="sr-only">Next</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </nav>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label>Opsi A</label>
+                                <input type="text"
+                                    class="form-control @error('opsi_a')
+                                is-invalid
+                            @enderror"
+                                    name="opsi_a" value="{{ !empty($soal) ? $soal->opsi_a : old('opsi_a') }}">
+                                @error('email')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label>Opsi B</label>
+                                <input type="text"
+                                    class="form-control @error('opsi_b')
+                                is-invalid
+                            @enderror"
+                                    name="opsi_b" value="{{ !empty($soal) ? $soal->opsi_b : old('opsi_b') }}">
+                                @error('email')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label>Opsi C</label>
+                                <input type="text"
+                                    class="form-control @error('opsi_c')
+                                is-invalid
+                            @enderror"
+                                    name="opsi_c" value="{{ !empty($soal) ? $soal->opsi_c : old('opsi_c') }}">
+                                @error('email')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label>Opsi D</label>
+                                <input type="text"
+                                    class="form-control @error('opsi_d')
+                                is-invalid
+                            @enderror"
+                                    name="opsi_d" value="{{ !empty($soal) ? $soal->opsi_d : old('opsi_d') }}">
+                                @error('email')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Jawaban</label>
+                                <div class="selectgroup w-100">
+                                    <label class="selectgroup-item">
+                                        <input type="radio" name="jawaban" value="a" class="selectgroup-input"
+                                            checked="">
+                                        <span class="selectgroup-button">A</span>
+                                    </label>
+                                    <label class="selectgroup-item">
+                                        <input type="radio" name="jawaban" value="b" class="selectgroup-input">
+                                        <span class="selectgroup-button">B</span>
+                                    </label>
+                                    <label class="selectgroup-item">
+                                        <input type="radio" name="jawaban" value="c" class="selectgroup-input">
+                                        <span class="selectgroup-button">C</span>
+                                    </label>
+                                    <label class="selectgroup-item">
+                                        <input type="radio" name="jawaban" value="d" class="selectgroup-input">
+                                        <span class="selectgroup-button">D</span>
+                                    </label>
+
+                                </div>
+                            </div>
+
+
                         </div>
-                    </div>
+                        <div class="card-footer text-left">
+                            <button class="btn btn-primary"><i class="fa fa-paper-plane"></i> Submit</button>
+                            <a href="{{ url('soal') }}" class="btn btn-outline-primary"><i class="fas fa-cancel"></i> Cancel</a>
+                        </div>
+                    </form>
                 </div>
+
             </div>
         </section>
     </div>
 @endsection
 
 @push('scripts')
-    <!-- JS Libraies -->
-    <script src="{{ asset('stisla/library/selectric/public/jquery.selectric.min.js') }}"></script>
-
-    <!-- Page Specific JS File -->
-    <script src="{{ asset('stisla/js/page/features-posts.js') }}"></script>
 @endpush

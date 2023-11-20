@@ -35,11 +35,14 @@ Route::middleware(['auth'])->group(function () {
 
     //--Users:
     //-----------------------------------------------------------------
+    Route::put('users/profile/{user}', [UserController::class, 'profile'])->name('users.profile');
+    Route::get('users/changepass/{user}', [UserController::class, 'changePassword'])->name('users.change-password');
+    Route::post('users/changepass/{user}', [UserController::class, 'updatePassword']);
     Route::resource('users', UserController::class);
 
     //--Soal:
     //-----------------------------------------------------------------
-    // Route::get('soal/list', 'SoalController@list');
+    Route::get('soal/list', [UserController::class, 'list']);
     Route::resource('soal', SoalController::class);
 });
 

@@ -26,7 +26,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Manage User</h4>
+                            <h4>User List <?= ($isFiltered) ? ': Data Filtered' : ''?></h4>
                             <div class="card-header-form">
                                 <form action="{{ url('users') }}" method="GET">
                                     <div class="input-group">

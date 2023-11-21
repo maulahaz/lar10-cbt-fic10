@@ -26,7 +26,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Manage Bank Soal <?= ($isFiltered) ? ': Data Filtered' : ''?></h4>
+                            <h4>Bank Soal <?= ($isFiltered) ? ': Data Filtered' : ''?></h4>
                             <div class="card-header-form">
                                 <form action="{{ url('soal') }}" method="GET">
                                     <div class="input-group">

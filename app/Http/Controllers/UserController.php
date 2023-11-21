@@ -14,6 +14,7 @@ class UserController extends Controller
     {
         // $users = \App\Models\User::paginate(10);
         $data['type_menu'] = 'users';
+        $data["isFiltered"] = (!is_null($request->input("search"))) ? true : false;
         $data['users'] = DB::table('users')
             ->when($request->input('search'), function ($query, $condition) {
                 return $query->where('name', 'like', '%' . $condition . '%');

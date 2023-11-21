@@ -14,11 +14,11 @@ Sebuah aplikasi seperti Quiz yang di gunakan sebagai bahan pembelajaran di Flutt
 - [Github Project bersama Mas Syaiful Bahri--Laravel backend](https://github.com/bahrie127/laravel-cbt-backend)
 
 ## Snapshots:
-!["Login-Register-and-Home"](public/images/snapshot/01-Login-Register-and-Home.png)
+![Login-Register-and-Home](public/assets/images/snapshot/01-Login-Register-and-Home.png)
 <hr>
-!["Profile-and-Change-Password"](public/images/snapshot/02-Profile-and-Change-Password.png)
+![Profile-and-Change-Password](public/assets/images/snapshot/02-Profile-and-Change-Password.png)
 <hr>
-!["User-List-CRUD-and-Search-Function"](public/images/snapshot/03-User-List-CRUD-and-Search-Function.png)
+![User-List-CRUD-and-Search-Function](public/assets/images/snapshot/03-User-List-CRUD-and-Search-Function.png)
 <hr>
-!["Bank-Soal-List-CRUD-and-Search-Function"](public/images/snapshot/04-Bank-Soal-List-CRUD-and-Search-Function.png)
+![Bank-Soal-List-CRUD-and-Search-Function](public/assets/images/snapshot/04-Bank-Soal-List-CRUD-and-Search-Function.png)
 <hr>

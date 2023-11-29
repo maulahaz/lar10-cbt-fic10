@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbl_soal', function (Blueprint $table) {
+        Schema::create('tbl_ujian_soal', function (Blueprint $table) {
             $table->id();
-            $table->string('pertanyaan');
-            $table->string('kategori');
-            $table->string('opsi_a');
-            $table->string('opsi_b');
-            $table->string('opsi_c');
-            $table->string('opsi_d');
-            $table->enum('jawaban', ['a', 'b','c','d']);
+            $table->foreignId('ujian_id')->constrained('tbl_ujian')->onDelete('cascade');
+            $table->foreignId('soal_id')->constrained('tbl_soal')->onDelete('cascade');
+            $table->string('kebenaran')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbl_soal');
+        Schema::dropIfExists('tbl_ujian_soal');
     }
 };

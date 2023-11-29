@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UjianController;
 
 
 //--API
@@ -20,3 +21,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+//--UJIAN : Create
+//-----------------------------------------------------------------
+Route::post('/create-ujian', [UjianController::class, 'create'])->middleware('auth:sanctum');
+Route::get('/get-soal-ujian', [UjianController::class, 'getSoalUjianByKategori'])->middleware('auth:sanctum');
+Route::post('/jawab-soal-ujian', [UjianController::class, 'jawabSoalUjian'])->middleware('auth:sanctum');

@@ -20,5 +20,7 @@ class UserSeeder extends Seeder
             'roles' => 'admin',
             'phone' => '081234567890',
         ]);
+
+        \App\Models\User::factory(10)->create();
     }
 }

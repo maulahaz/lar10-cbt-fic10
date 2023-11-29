@@ -14,7 +14,7 @@ class SoalSeeder extends Seeder
     public function run(): void
     {
         //--Factory Data:
-        \App\Models\Soal::factory(20)->create();
+        \App\Models\Soal::factory(100)->create();
 
         //--Custom Data:
         // DB::table('tbl_banksoal')->insert(array(

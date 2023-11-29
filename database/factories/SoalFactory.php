@@ -17,7 +17,7 @@ class SoalFactory extends Factory
     public function definition(): array
     {
         return [
-            'pertanyaan' => fake()->paragraph(),
+            'pertanyaan' => fake()->sentence(),
             'kategori' => fake()->randomElement(['Area-1', 'Area-2','Area-3','Area-9']),
             'opsi_a' => fake()->sentence(),
             'opsi_b' => fake()->sentence(),

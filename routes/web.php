@@ -15,9 +15,10 @@ use App\Http\Controllers\SoalController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('homepage');
-// });
+Route::get('/pwd', function () {
+    // return view('homepage');
+    return die(Hash::make('pass123'));
+});
 
 Route::get('/', function () {
     return view('auth.auth-login');

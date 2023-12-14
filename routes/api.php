@@ -27,3 +27,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/create-ujian', [UjianController::class, 'create'])->middleware('auth:sanctum');
 Route::get('/get-soal-ujian', [UjianController::class, 'getSoalUjianByKategori'])->middleware('auth:sanctum');
 Route::post('/jawab-soal-ujian', [UjianController::class, 'jawabSoalUjian'])->middleware('auth:sanctum');
+
+//--CONTENT
+//-----------------------------------------------------------------
+Route::apiResource('contents', \App\Http\Controllers\Api\ContentController::class)->middleware('auth:sanctum');
+
+//--MATERI
+//-----------------------------------------------------------------
+Route::apiResource('materi', \App\Http\Controllers\Api\MateriController::class)->middleware('auth:sanctum');

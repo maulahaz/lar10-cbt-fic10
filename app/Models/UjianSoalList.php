@@ -14,5 +14,15 @@ class UjianSoalList extends Model
         'ujian_id',
         'kebenaran',
     ];
+
+    public function ujian()
+    {
+        return $this->belongsTo(Ujian::class);
+    }
+
+    public function soal()
+    {
+        return $this->belongsTo(Soal::class);
+    }
     
 }

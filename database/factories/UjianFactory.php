@@ -18,10 +18,19 @@ class UjianFactory extends Factory
     {
         return [
             'user_id'   => $this->faker->numberBetween(1,5),
-            'nilai_angka'   => $this->faker->numberBetween(1,50),
-            'nilai_verbal'   => $this->faker->numberBetween(1,50),
-            'nilai_logika'   => $this->faker->numberBetween(1,50),
-            'hasil'   => $this->faker->randomElement(['Lulus', 'Tidak Lulus']),
+            'nilai_area1'   => $this->faker->numberBetween(1,50),
+            'nilai_area2'   => $this->faker->numberBetween(1,50),
+            'nilai_area3'   => $this->faker->numberBetween(1,50),
+            'nilai_area9'   => $this->faker->numberBetween(1,50),
+            'hasil'         => $this->faker->randomElement(['Lulus', 'Tidak Lulus']),
+            'status_area1'        => $this->faker->randomElement(['Start', 'Done']),
+            'status_area2'        => $this->faker->randomElement(['Start', 'Done']),
+            'status_area3'        => $this->faker->randomElement(['Start', 'Done']),
+            'status_area9'        => $this->faker->randomElement(['Start', 'Done']),
+            'timer_area1'   => $this->faker->numberBetween(1,100),
+            'timer_area2'   => $this->faker->numberBetween(1,100),
+            'timer_area3'   => $this->faker->numberBetween(1,100),
+            'timer_area9'   => $this->faker->numberBetween(1,100),
         ];
     }
 }

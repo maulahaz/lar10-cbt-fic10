@@ -80,8 +80,20 @@ class UjianController extends Controller
 
         $soal = Soal::whereIn('id', $ujianSoalListId)->where('kategori', $request->kategori)->get();
 
+        //--Get Timer by Category:
+        if($request->kategori == 'Area-1'){
+            $timer = $ujian->timer_area1;
+        }else if($request->kategori == 'Area-2'){
+            $timer = $ujian->timer_area2;
+        }else if($request->kategori == 'Area-3'){
+            $timer = $ujian->timer_area3;
+        }else if($request->kategori == 'Area-9'){
+            $timer = $ujian->timer_area9;
+        }
+
         return response()->json([
             'message'   => 'Berhasil',
+            'timer'     => $timer,
             'data'      => SoalResource::collection($soal)
         ]);
     }

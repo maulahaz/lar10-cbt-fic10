@@ -18,9 +18,13 @@ return new class extends Migration
             // $table->bigInteger('user_id')->constrained();
             // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             //--Nilai
-            $table->integer('nilai_angka')->nullable();
-            $table->integer('nilai_verbal')->nullable();
-            $table->integer('nilai_logika')->nullable();
+            // $table->integer('nilai_angka')->nullable();
+            // $table->integer('nilai_verbal')->nullable();
+            // $table->integer('nilai_logika')->nullable();
+            $table->integer('nilai_area1')->nullable();
+            $table->integer('nilai_area2')->nullable();
+            $table->integer('nilai_area3')->nullable();
+            $table->integer('nilai_area9')->nullable();
             //--hasil
             $table->string('hasil')->nullable();
             $table->timestamps();

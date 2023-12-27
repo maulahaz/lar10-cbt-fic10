@@ -182,11 +182,11 @@ class UjianController extends Controller
             $timer_field = 'timer_area9';
         }
 
-        // $ujian->update([
-        //     $category_field => $result,
-        //     $status_field => 'done',
-        //     $timer_field => 0,
-        // ]);
+        $ujian->update([
+            $category_field => $result,
+            $status_field => 'done',
+            $timer_field => 0,
+        ]);
 
         return response()->json([
             'message' => 'Berhasil : Exam result updated',

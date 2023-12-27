@@ -134,4 +134,63 @@ class UjianController extends Controller
         ]);
 
     }
+
+    public function getExamResultByKategori(Request $request)
+    {
+        $category = $request->category;
+        $ujian = Ujian::where('user_id', $request->user()->id)->first();
+        if (!$ujian) {
+            return response()->json([
+                'message' => 'Failed : Ujian Not found',
+                'data' => [],
+            ]);
+        }
+        $ujianSoalList = UjianSoalList::where('ujian_id', $ujian->id)->get();
+        //--ujiansoallist by kategori
+        $ujianSoalList = $ujianSoalList->filter(function ($value, $key) use ($category) {
+            return $value->soal->kategori == $category;
+        });
+
+        //--Count Result
+        $totalCorrect = $ujianSoalList->where('kebenaran', true)->count();
+        $totalSoal = $ujianSoalList->count();
+        if($totalSoal < 1){
+            return response()->json([
+                'message' => 'Fail : Total Question not available',
+            ]);
+        }
+
+        // return response()->json($totalSoal);
+        $result = ($totalCorrect / $totalSoal) * 100;
+
+        //--Get Timer by Category:
+        if($category == 'Area-1'){
+            $category_field = 'nilai_area1';
+            $status_field = 'status_area1';
+            $timer_field = 'timer_area1';
+        }else if($category == 'Area-2'){
+            $category_field = 'nilai_area2';
+            $status_field = 'status_area2';
+            $timer_field = 'timer_area2';
+        }else if($category == 'Area-3'){
+            $category_field = 'nilai_area3';
+            $status_field = 'status_area3';
+            $timer_field = 'timer_area3';
+        }else if($category == 'Area-9'){
+            $category_field = 'nilai_area9';
+            $status_field = 'status_area9';
+            $timer_field = 'timer_area9';
+        }
+
+        // $ujian->update([
+        //     $category_field => $result,
+        //     $status_field => 'done',
+        //     $timer_field => 0,
+        // ]);
+
+        return response()->json([
+            'message' => 'Berhasil : Exam result updated',
+            'Result' => $result,
+        ]);
+    }
 }

@@ -15,10 +15,11 @@ class UjianController extends Controller
     public function create(Request $request)
     {
         //--get 20 soal angka random unique
-        $soalArea1 = Soal::where('kategori', 'Area-1')->inRandomOrder()->limit(10)->get();
-        $soalArea2 = Soal::where('kategori', 'Area-2')->inRandomOrder()->limit(10)->get();
-        $soalArea3 = Soal::where('kategori', 'Area-3')->inRandomOrder()->limit(10)->get();
-        $soalArea9 = Soal::where('kategori', 'Area-9')->inRandomOrder()->limit(10)->get();
+        $soalArea1 = Soal::where('kategori', 'Area-1')->inRandomOrder()->limit(5)->get();
+        $soalArea2 = Soal::where('kategori', 'Area-2')->inRandomOrder()->limit(5)->get();
+        $soalArea3 = Soal::where('kategori', 'Area-3')->inRandomOrder()->limit(5)->get();
+        $soalArea9 = Soal::where('kategori', 'Area-9')->inRandomOrder()->limit(5)->get();
+        // return response()->json($soalArea9);
 
         $ujian = Ujian::create([
             'user_id' => $request->user()->id
@@ -38,14 +39,14 @@ class UjianController extends Controller
             ]);
         }
 
-        foreach ($soalArea1 as $row) {
+        foreach ($soalArea3 as $row) {
             UjianSoalList::create([
                 'ujian_id'  => $ujian->id,
                 'soal_id'   => $row->id,
             ]);
         }
 
-        foreach ($soalArea1 as $row) {
+        foreach ($soalArea9 as $row) {
             UjianSoalList::create([
                 'ujian_id'  => $ujian->id,
                 'soal_id'   => $row->id,
@@ -58,10 +59,74 @@ class UjianController extends Controller
         ]);
     }
 
+    public function createExamByCategory(Request $request)
+    {
+        $category = $request->category;
+        // return response()->json($category);
+        switch ($category) {
+          case 'Area-1':
+            $soalArea = Soal::where('kategori', 'Area-1')->inRandomOrder()->limit(5)->get();
+            $timerArea = 'area1';
+            break;
+          case 'Area-2':
+            $soalArea = Soal::where('kategori', 'Area-2')->inRandomOrder()->limit(5)->get();
+            $timerArea = 'area2';
+            break;
+          case 'Area-3':
+            $soalArea = Soal::where('kategori', 'Area-3')->inRandomOrder()->limit(5)->get();
+            $timerArea = 'area3';
+            break;
+          case 'Area-9':
+            $soalArea = Soal::where('kategori', 'Area-9')->inRandomOrder()->limit(5)->get();
+            $timerArea = 'area9';
+            break;
+        }
+        // return response()->json($soalArea);
+
+        $ujian = Ujian::create([
+            'user_id' => $request->user()->id,
+            'timer_'.$timerArea => 30 //--Timer 30seconds
+        ]);
+
+        foreach ($soalArea as $row) {
+            UjianSoalList::create([
+                'ujian_id'  => $ujian->id,
+                'soal_id'   => $row->id,
+            ]);
+        }
+
+        return response()->json([
+            'message'   => 'Exam '.$category.' created successfully',
+            'data'      => $ujian
+        ]);
+    }
+
     public function getSoalUjianByKategori(Request $request)
     {
-        $ujian = Ujian::where('user_id', $request->user()->id)->first();
-        //--if $ujian By User empty, return empty:
+        //--Get Something by Category:
+        if($request->kategori == 'Area-1'){
+            $category_field = 'nilai_area1';
+            $status_field = 'status_area1';
+            $timer_field = 'timer_area1';
+        }else if($request->kategori == 'Area-2'){
+            $category_field = 'nilai_area2';
+            $status_field = 'status_area2';
+            $timer_field = 'timer_area2';
+        }else if($request->kategori == 'Area-3'){
+            $category_field = 'nilai_area3';
+            $status_field = 'status_area3';
+            $timer_field = 'timer_area3';
+        }else if($request->kategori == 'Area-9'){
+            $category_field = 'nilai_area9';
+            $status_field = 'status_area9';
+            $timer_field = 'timer_area9';
+        }
+
+        $ujian = Ujian::where('user_id', $request->user()->id)
+            ->where($status_field, '!=', 'done')
+            ->first();
+        // return response()->json($ujian);
+        //--if $ujian By User empty (All are done),then return empty:
         if(!$ujian){
             return response()->json([
                 'message' => 'Failed : Ujian Not found',
@@ -80,7 +145,7 @@ class UjianController extends Controller
 
         $soal = Soal::whereIn('id', $ujianSoalListId)->where('kategori', $request->kategori)->get();
 
-        //--Get Timer by Category:
+        //--Get Something by Category:
         if($request->kategori == 'Area-1'){
             $timer = $ujian->timer_area1;
         }else if($request->kategori == 'Area-2'){
@@ -103,9 +168,31 @@ class UjianController extends Controller
         $validatedData = $request->validate([
             'soal_id' => 'required',
             'jawaban' => 'required',
+            'category' => 'required',
         ]);
 
-        $ujian = Ujian::where('user_id', $request->user()->id)->first();
+        if($request->category == 'Area-1'){
+            $category_field = 'nilai_area1';
+            $status_field = 'status_area1';
+            $timer_field = 'timer_area1';
+        }else if($request->category == 'Area-2'){
+            $category_field = 'nilai_area2';
+            $status_field = 'status_area2';
+            $timer_field = 'timer_area2';
+        }else if($request->category == 'Area-3'){
+            $category_field = 'nilai_area3';
+            $status_field = 'status_area3';
+            $timer_field = 'timer_area3';
+        }else if($request->category == 'Area-9'){
+            $category_field = 'nilai_area9';
+            $status_field = 'status_area9';
+            $timer_field = 'timer_area9';
+        }
+
+        $ujian = Ujian::where('user_id', $request->user()->id)
+            ->where($status_field, '!=', 'done')
+            ->first();
+        // $ujian = Ujian::where('user_id', $request->user()->id)->first();
         //--if $ujian empty, return empty:
         if(!$ujian){
             return response()->json([
@@ -114,9 +201,11 @@ class UjianController extends Controller
             ]);
         }
 
-        $ujianSoalList = UjianSoalList::where('ujian_id', $ujian->id)->where('soal_id', $validatedData['soal_id'])->first();
-        $soal = Soal::where('id', $validatedData['soal_id'])->first();
+        $ujianSoalList = UjianSoalList::where('ujian_id', $ujian->id)
+                ->where('soal_id', $validatedData['soal_id'])
+                ->first();
 
+        $soal = Soal::where('id', $validatedData['soal_id'])->first();
 
         if($soal->jawaban == $validatedData['jawaban']){
             $postedData['kebenaran'] = true;
@@ -125,8 +214,8 @@ class UjianController extends Controller
             $postedData['kebenaran'] = false;
             $ujianSoalList->update($postedData);
         }
+        return response()->json($postedData);
         
-        // return response()->json($postedData);
 
         return response()->json([
             'message' => 'Berhasil : Jawaban tersimpan',

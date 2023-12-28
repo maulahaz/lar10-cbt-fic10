@@ -12,9 +12,18 @@ class Ujian extends Model
 
     protected $fillable = [
         'user_id',
-        'nilai_angka',
-        'nilai_verbal',
-        'nilai_logika',
+        'nilai_area1',
+        'nilai_area2',
+        'nilai_area3',
+        'nilai_area9',
         'hasil',
+        'status_area1',
+        'status_area2',
+        'status_area3',
+        'status_area9',
+        'timer_area1',
+        'timer_area2',
+        'timer_area3',
+        'timer_area9',
     ];    
 }

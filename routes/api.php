@@ -25,6 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //--UJIAN : Create
 //-----------------------------------------------------------------
 Route::post('/create-ujian', [UjianController::class, 'create'])->middleware('auth:sanctum');
+Route::post('/create-exam-by-category', [UjianController::class, 'createExamByCategory'])->middleware('auth:sanctum');
 Route::get('/get-soal-ujian', [UjianController::class, 'getSoalUjianByKategori'])->middleware('auth:sanctum');
 Route::post('/jawab-soal-ujian', [UjianController::class, 'jawabSoalUjian'])->middleware('auth:sanctum');
 Route::get('/get-exam-result', [UjianController::class, 'getExamResultByKategori'])->middleware('auth:sanctum');

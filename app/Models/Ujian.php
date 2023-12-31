@@ -12,11 +12,15 @@ class Ujian extends Model
 
     protected $fillable = [
         'user_id',
+        'kategori',
+        'status',
+        'timer',
+        'score',
+        'hasil',
         'nilai_area1',
         'nilai_area2',
         'nilai_area3',
         'nilai_area9',
-        'hasil',
         'status_area1',
         'status_area2',
         'status_area3',

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Soal;
 use App\Models\Ujian;
 use App\Models\UjianSoalList;
@@ -66,26 +67,23 @@ class UjianController extends Controller
         switch ($category) {
           case 'Area-1':
             $soalArea = Soal::where('kategori', 'Area-1')->inRandomOrder()->limit(5)->get();
-            $timerArea = 'area1';
             break;
           case 'Area-2':
             $soalArea = Soal::where('kategori', 'Area-2')->inRandomOrder()->limit(5)->get();
-            $timerArea = 'area2';
             break;
           case 'Area-3':
             $soalArea = Soal::where('kategori', 'Area-3')->inRandomOrder()->limit(5)->get();
-            $timerArea = 'area3';
             break;
           case 'Area-9':
             $soalArea = Soal::where('kategori', 'Area-9')->inRandomOrder()->limit(5)->get();
-            $timerArea = 'area9';
             break;
         }
         // return response()->json($soalArea);
 
         $ujian = Ujian::create([
             'user_id' => $request->user()->id,
-            'timer_'.$timerArea => 30 //--Timer 30seconds
+            'kategori' => $category,
+            'timer' => 15 //--Timer 15seconds
         ]);
 
         foreach ($soalArea as $row) {
@@ -163,8 +161,44 @@ class UjianController extends Controller
         ]);
     }
 
+    public function getExamQuestionByKategori(Request $request)
+    {
+        $ujian = Ujian::where('user_id', $request->user()->id)
+            ->where('kategori', $request->kategori)
+            ->where('status', '!=', 'done')
+            ->first();
+
+        // return response()->json($ujian);
+        //--if $ujian By User empty (All are done),then return empty:
+        if(!$ujian){
+            return response()->json([
+                'message' => 'Failed : Exam Not found',
+                'data' => [],
+            ]);
+        }
+
+        $ujianSoalList = UjianSoalList::where('ujian_id', $ujian->id)->get();
+
+        $soalId = $ujianSoalList->pluck('soal_id');
+
+        $ujianSoalListId = [];
+        foreach ($ujianSoalList as $row) {
+            array_push($ujianSoalListId, $row->soal_id);
+        }
+
+        $soal = Soal::whereIn('id', $ujianSoalListId)->where('kategori', $request->kategori)->get();
+
+        return response()->json([
+            'message'   => 'Berhasil',
+            'timer'     => $ujian->timer,
+            'data'      => SoalResource::collection($soal)
+        ]);
+    }
+
     public function jawabSoalUjian(Request $request)
     {
+        //-- Attention to 'category' and 'kategori'
+
         $validatedData = $request->validate([
             'soal_id' => 'required',
             'jawaban' => 'required',
@@ -190,9 +224,17 @@ class UjianController extends Controller
         }
 
         $ujian = Ujian::where('user_id', $request->user()->id)
-            ->where($status_field, '!=', 'done')
+            ->where('kategori', $request->category)
+            ->where('status', '!=', 'done')
             ->first();
+
+        // $ujian = Ujian::where('user_id', $request->user()->id)
+        //     // ->where('kategori', $request->kategori)
+        //     ->where($status_field, '!=', 'done')
+        //     ->first();
         // $ujian = Ujian::where('user_id', $request->user()->id)->first();
+        // return response()->json($ujian);
+
         //--if $ujian empty, return empty:
         if(!$ujian){
             return response()->json([
@@ -202,8 +244,8 @@ class UjianController extends Controller
         }
 
         $ujianSoalList = UjianSoalList::where('ujian_id', $ujian->id)
-                ->where('soal_id', $validatedData['soal_id'])
-                ->first();
+                        ->where('soal_id', $validatedData['soal_id'])
+                        ->first();
 
         $soal = Soal::where('id', $validatedData['soal_id'])->first();
 
@@ -214,7 +256,7 @@ class UjianController extends Controller
             $postedData['kebenaran'] = false;
             $ujianSoalList->update($postedData);
         }
-        return response()->json($postedData);
+        // return response()->json($ujianSoalList);
         
 
         return response()->json([
@@ -227,13 +269,19 @@ class UjianController extends Controller
     public function getExamResultByKategori(Request $request)
     {
         $category = $request->category;
-        $ujian = Ujian::where('user_id', $request->user()->id)->first();
+
+        $ujian = Ujian::where('user_id', $request->user()->id)
+                ->where('kategori', $category)
+                ->where('status', '!=', 'done')
+                ->first();
+
         if (!$ujian) {
             return response()->json([
                 'message' => 'Failed : Ujian Not found',
                 'data' => [],
             ]);
         }
+
         $ujianSoalList = UjianSoalList::where('ujian_id', $ujian->id)->get();
         //--ujiansoallist by kategori
         $ujianSoalList = $ujianSoalList->filter(function ($value, $key) use ($category) {
@@ -249,8 +297,9 @@ class UjianController extends Controller
             ]);
         }
 
-        // return response()->json($totalSoal);
         $result = ($totalCorrect / $totalSoal) * 100;
+        $hasil = $result >= 80 ? 'Lulus' : 'Tidak Lulus';
+        // return response()->json($hasil);
 
         //--Get Timer by Category:
         if($category == 'Area-1'){
@@ -275,11 +324,52 @@ class UjianController extends Controller
             $category_field => $result,
             $status_field => 'done',
             $timer_field => 0,
+            'status' => 'done',
+            'timer' => 0,
+            'score' => $result,
+            'hasil' => $hasil,
         ]);
 
         return response()->json([
             'message' => 'Berhasil : Exam result updated',
             'Result' => $result,
         ]);
+    }
+
+    public function getExamResult(Request $request)
+    {
+        // $ujian = Ujian::where('user_id', $request->user()->id)
+        //         ->where('status', 'done')
+        //         ->orderBy('id', 'desc')->take(5)
+        //         ->get();
+
+        // return response()->json($ujian); 
+
+        $ujian = DB::table('tbl_ujian')
+                  ->join('tbl_ujian_soal', 'tbl_ujian_soal.ujian_id', '=', 'tbl_ujian.id')
+                  ->selectRaw(
+                        '
+                            tbl_ujian.*, 
+                            COUNT(tbl_ujian_soal.ujian_id) as total_soal, 
+                            SUM(tbl_ujian_soal.kebenaran) as total_correct
+                        '
+                    )
+                  ->groupBy('tbl_ujian_soal.ujian_id')
+                  ->orderBy('tbl_ujian.id', 'desc')
+                  ->take(5)
+                  ->get();                   
+
+        if (!$ujian) {
+            return response()->json([
+                'status'    => 'fail',
+                'message'   => 'Exam result Not found',
+                'data'      => [],
+            ]);
+        }else{
+            return response()->json([
+                'status'    => 'success',
+                'data'      => $ujian,
+            ]);            
+        }
     }
 }

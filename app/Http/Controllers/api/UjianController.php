@@ -298,7 +298,7 @@ class UjianController extends Controller
         }
 
         $result = ($totalCorrect / $totalSoal) * 100;
-        $hasil = $result >= 80 ? 'Lulus' : 'Tidak Lulus';
+        $hasil = $result >= 80 ? 'Passed' : 'Not Passed';
         // return response()->json($hasil);
 
         //--Get Timer by Category:
@@ -356,7 +356,8 @@ class UjianController extends Controller
                     )
                   ->groupBy('tbl_ujian_soal.ujian_id')
                   ->orderBy('tbl_ujian.id', 'desc')
-                  ->take(5)
+                  //->skip(1) //--Skip 1st row
+                  ->take(6) //--Take 5rows after 1st row
                   ->get();                   
 
         if (!$ujian) {
